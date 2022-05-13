@@ -11,7 +11,7 @@ attrs==20.3.0 \
     #   flake8-implicit-str-concat
     #   interrogate
     #   pytest
-backports.entry-points-selectable==1.1.0 \
+backports-entry-points-selectable==1.1.0 \
     --hash=sha256:988468260ec1c196dab6ae1149260e2f5472c9110334e5d51adcb77867361f6a \
     --hash=sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc
     # via virtualenv
@@ -109,9 +109,9 @@ flake8-implicit-str-concat==0.2.0 \
     --hash=sha256:a662364c0389a14f5c94a807eda3ac81ab545ba8d75aa244c022af4a7b121eec \
     --hash=sha256:ea856c22cd8dbd4ecb8d091e92784ce09a3083f1763df895693bf887d21acef5
     # via -r requirements.dev.in
-flake8-no-pep420==2.0.0 \
-    --hash=sha256:517126ced5fc43bb90a562cf7c1d33b67fbd067a69b6ded3867be5c5a1437355 \
-    --hash=sha256:9e5e402e75eab927d61c950dbbba628674b4d0ecb16ccc441627c439c1320654
+flake8-no-pep420==2.3.0 \
+    --hash=sha256:1b965a18508ac7842de288740aa43627d3a5bb2be64f7d5d70d55cb691c3de84 \
+    --hash=sha256:ccba3efa05c50b1c2712d78807cca81e563ab571d6b3bcb90228e87388704cf5
     # via -r requirements.dev.in
 freezegun==1.1.0 \
     --hash=sha256:177f9dd59861d871e27a484c3332f35a6e3f5d14626f2bf91be37891f18927f3 \
