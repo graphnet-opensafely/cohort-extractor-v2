@@ -11,7 +11,7 @@ attrs==20.3.0 \
     #   flake8-implicit-str-concat
     #   interrogate
     #   pytest
-backports.entry-points-selectable==1.1.0 \
+backports-entry-points-selectable==1.1.0 \
     --hash=sha256:988468260ec1c196dab6ae1149260e2f5472c9110334e5d51adcb77867361f6a \
     --hash=sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc
     # via virtualenv
@@ -78,9 +78,9 @@ coverage[toml]==6.0.1 \
     --hash=sha256:f398d38e6ebc2637863db1d7be3d4f9c5174e7d24bb3b0716cdb1f204669cbcf \
     --hash=sha256:f82a17f2a77958f3eef40ad385fc82d4c6ba9a77a51a174efe03ce75daebbc16
     # via pytest-cov
-databricks-cli==0.16.2 \
-    --hash=sha256:3e9a65a19a589b795ebbd9b3b16a8e470d612d57d6216ae44a9c7a735e4080e6 \
-    --hash=sha256:74c35b38fe686881af4b4797c4f3ab2e1c9e9ff4986f470486f152fb45d19b24
+databricks-cli==0.17.2 \
+    --hash=sha256:16bda8def2fd8e361e8f355a016841bc1b8a87da25047f5339acf559fa55f1fb \
+    --hash=sha256:cdcc073df0c79efc12f3220f8b76d3247aed88624338eb531c381123601bf36d
     # via -r requirements.dev.in
 distlib==0.3.3 \
     --hash=sha256:c8b54e8454e5bf6237cc84c20e8264c3e991e824ef27e8f1e81049867d861e31 \
@@ -179,6 +179,10 @@ nodeenv==1.6.0 \
     --hash=sha256:3ef13ff90291ba2a4a7a4ff9a979b63ffdd00a464dbe04acf0ea6471517a4c2b \
     --hash=sha256:621e6b7076565ddcacd2db0294c0381e01fd28945ab36bcf00f41c5daf63bef7
     # via pre-commit
+oauthlib==3.2.0 \
+    --hash=sha256:23a8208d75b902797ea29fd31fa80a15ed9dc2c6c16fe73f5d346f83f6fa27a2 \
+    --hash=sha256:6db33440354787f9b7f3a6dbd4febf5d0f93758354060e802f6c06cb493022fe
+    # via databricks-cli
 packaging==21.0 \
     --hash=sha256:7dc96269f53a4ccec5c0670940a4281106dd0bb343f47b7471f779df49c2fbe7 \
     --hash=sha256:c86254f9220d55e31cc94d69bade760f0847da8000def4dfe1c6b872fd14ff14
@@ -231,6 +235,10 @@ pyflakes==2.4.0 \
     --hash=sha256:05a85c2872edf37a4ed30b0cce2f6093e1d0581f8c19d7393122da7e25b2b24c \
     --hash=sha256:3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e
     # via flake8
+pyjwt==2.4.0 \
+    --hash=sha256:72d1d253f32dbd4f5c88eaf1fdc62f3a19f676ccbadb9dbc5d07e951b2b26daf \
+    --hash=sha256:d42908208c699b3b973cbeb01a969ba6a96c821eefb1c5bfe4c390c01d67abba
+    # via databricks-cli
 pyparsing==2.4.7 \
     --hash=sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1 \
     --hash=sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b
