@@ -11,7 +11,7 @@ attrs==20.3.0 \
     #   flake8-implicit-str-concat
     #   interrogate
     #   pytest
-backports.entry-points-selectable==1.1.0 \
+backports-entry-points-selectable==1.1.0 \
     --hash=sha256:988468260ec1c196dab6ae1149260e2f5472c9110334e5d51adcb77867361f6a \
     --hash=sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc
     # via virtualenv
@@ -86,9 +86,9 @@ distlib==0.3.3 \
     --hash=sha256:c8b54e8454e5bf6237cc84c20e8264c3e991e824ef27e8f1e81049867d861e31 \
     --hash=sha256:d982d0751ff6eaaab5e2ec8e691d949ee80eddf01a62eaa96ddb11531fe16b05
     # via virtualenv
-docker==5.0.3 \
-    --hash=sha256:7a79bb439e3df59d0a72621775d600bc8bc8b422d285824cb37103eab91d1ce0 \
-    --hash=sha256:d916a26b62970e7c2f554110ed6af04c7ccff8e9f81ad17d0d40c75637e227fb
+docker==6.0.0 \
+    --hash=sha256:19e330470af40167d293b0352578c1fa22d74b34d3edf5d4ff90ebc203bbb2f1 \
+    --hash=sha256:6e06ee8eca46cd88733df09b6b80c24a1a556bc5cb1e1ae54b2c239886d245cf
     # via -r requirements.dev.in
 filelock==3.3.0 \
     --hash=sha256:8c7eab13dc442dc249e95158bcc12dec724465919bdc9831fdbf0660f03d1785 \
@@ -182,7 +182,9 @@ nodeenv==1.6.0 \
 packaging==21.0 \
     --hash=sha256:7dc96269f53a4ccec5c0670940a4281106dd0bb343f47b7471f779df49c2fbe7 \
     --hash=sha256:c86254f9220d55e31cc94d69bade760f0847da8000def4dfe1c6b872fd14ff14
-    # via pytest
+    # via
+    #   docker
+    #   pytest
 pandas-stubs==1.2.0.39 \
     --hash=sha256:a9b8d95e41a58657918e9b0b665808925e86fbc508bc59e50e99e384b28f6498 \
     --hash=sha256:d6cb03bc2c4681c678450c35b66d735937763e5c74cdeb8388fc706eb8d52d7d
@@ -356,7 +358,9 @@ typing-extensions==3.10.0.2 \
 urllib3==1.26.7 \
     --hash=sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece \
     --hash=sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844
-    # via requests
+    # via
+    #   docker
+    #   requests
 virtualenv==20.8.1 \
     --hash=sha256:10062e34c204b5e4ec5f62e6ef2473f8ba76513a9a617e873f1f8fb4a519d300 \
     --hash=sha256:bcc17f0b3a29670dd777d6f0755a4c04f28815395bca279cdcb213b97199a6b8
