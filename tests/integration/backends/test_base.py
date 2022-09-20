@@ -4,24 +4,28 @@ import pytest
 import sqlalchemy
 
 from databuilder import sqlalchemy_types
-from databuilder.backends.base import BaseBackend, Column, MappedTable, QueryTable
+from databuilder.backends.base import BaseBackend, MappedTable, QueryTable
+from databuilder.ehrql import Dataset
 from databuilder.query_engines.base_sql import BaseSQLQueryEngine
-from databuilder.query_language import Dataset, build_event_table, build_patient_table
+from databuilder.tables import EventFrame, PatientFrame, Series, table
 
-from ...lib.util import next_id
+# Generate an integer sequence to use as default IDs. Normally you'd rely on the DBMS to
+# provide these, but we need to support DBMSs like Spark which don't have this feature.
+next_id = iter(range(1, 2**63)).__next__
 
 Base = sqlalchemy.orm.declarative_base()
 
 
 # Simple schema to test against
-patients = build_patient_table(
-    "patients",
-    {"date_of_birth": datetime.date},
-)
-covid_tests = build_event_table(
-    "covid_tests",
-    {"date": datetime.date, "positive": int},
-)
+@table
+class patients(PatientFrame):
+    date_of_birth = Series(datetime.date)
+
+
+@table
+class covid_tests(EventFrame):
+    date = Series(datetime.date)
+    positive = Series(int)
 
 
 class TestBackend(BaseBackend):
@@ -32,23 +36,19 @@ class TestBackend(BaseBackend):
     patients = MappedTable(
         source="patient_record",
         columns=dict(
-            patient_id=Column("integer", source="PatientId"),
-            date_of_birth=Column("date", source="DoB"),
+            patient_id="PatientId",
+            date_of_birth="DoB",
         ),
     )
 
     # Define a table which is a VIEW-like representation of data from multuple
     # underlying tables
     covid_tests = QueryTable(
-        columns=dict(
-            date=Column("date"),
-            positive=Column("boolean"),
-        ),
-        query="""
-            SELECT patient_id, date, 1 AS positive FROM positive_result
-            UNION ALL
-            SELECT patient_id, date, 0 AS positive FROM negative_result
-        """,
+        """
+        SELECT patient_id, date, 1 AS positive FROM positive_result
+        UNION ALL
+        SELECT patient_id, date, 0 AS positive FROM negative_result
+        """
     )
 
 

@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from databuilder.query_language import Dataset
+from databuilder.ehrql import Dataset
 
 from . import tables
 
@@ -29,6 +29,11 @@ def spec_test(request, engine):
         # the series under test.
         dataset = make_dataset(population)
         dataset.v = series
+
+        # If we're expecting floats then we want only approximate equality to account
+        # for rounding differences
+        if any(isinstance(v, float) for v in expected_results.values()):
+            expected_results = pytest.approx(expected_results, rel=1e-5)
 
         # Extract data, and check it's as expected.
         results = {r["patient_id"]: r["v"] for r in engine.extract(dataset)}

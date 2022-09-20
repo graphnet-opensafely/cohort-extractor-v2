@@ -5,9 +5,16 @@ import pytest
 from databuilder.query_language import (
     Dataset,
     DateEventSeries,
+    EventFrame,
     IntEventSeries,
-    build_patient_table,
+    IntPatientSeries,
+    PatientFrame,
+    SchemaError,
+    Series,
+    StrEventSeries,
+    StrPatientSeries,
     compile,
+    table,
 )
 from databuilder.query_model import (
     Function,
@@ -19,10 +26,10 @@ from databuilder.query_model import (
     Value,
 )
 
-patients_schema = {
-    "date_of_birth": date,
-}
-patients = build_patient_table("patients", patients_schema)
+patients_schema = TableSchema(date_of_birth=date)
+patients = PatientFrame(SelectPatientTable("patients", patients_schema))
+events_schema = TableSchema(event_date=date)
+events = EventFrame(SelectTable("coded_events", events_schema))
 
 
 def test_dataset():
@@ -59,6 +66,27 @@ def test_dataset_preserves_variable_order():
 
     variables = list(compile(dataset).keys())
     assert variables == ["population", "foo", "baz", "bar"]
+
+
+def test_assign_population_variable():
+    dataset = Dataset()
+    with pytest.raises(AttributeError, match="Cannot set column 'population'"):
+        dataset.population = patients.exists_for_patient()
+
+
+def test_cannot_reassign_dataset_column():
+    dataset = Dataset()
+    dataset.set_population(patients.exists_for_patient())
+    dataset.foo = patients.date_of_birth.year
+    with pytest.raises(AttributeError, match="already set"):
+        dataset.foo = patients.date_of_birth.year + 100
+
+
+def test_cannot_assign_frame_to_column():
+    dataset = Dataset()
+    dataset.set_population(patients.exists_for_patient())
+    with pytest.raises(TypeError, match="Invalid column 'event_date'"):
+        dataset.event_date = events.event_date
 
 
 # The problem: We'd like to test that operations on query language (QL) elements return
@@ -141,3 +169,55 @@ def test_series_are_not_hashable():
     int_series = IntEventSeries(qm_int_series)
     with pytest.raises(TypeError):
         {int_series: True}
+
+
+# TEST CLASS-BASED FRAME CONSTRUCTOR
+#
+
+
+def test_construct_constructs_patient_frame():
+    @table
+    class some_table(PatientFrame):
+        some_int = Series(int)
+        some_str = Series(str)
+
+    assert isinstance(some_table, PatientFrame)
+    assert some_table.qm_node.name == "some_table"
+    assert isinstance(some_table.some_int, IntPatientSeries)
+    assert isinstance(some_table.some_str, StrPatientSeries)
+
+
+def test_construct_constructs_event_frame():
+    @table
+    class some_table(EventFrame):
+        some_int = Series(int)
+        some_str = Series(str)
+
+    assert isinstance(some_table, EventFrame)
+    assert some_table.qm_node.name == "some_table"
+    assert isinstance(some_table.some_int, IntEventSeries)
+    assert isinstance(some_table.some_str, StrEventSeries)
+
+
+def test_construct_enforces_correct_base_class():
+    with pytest.raises(SchemaError, match="Schema class must subclass"):
+
+        @table
+        class some_table(Dataset):
+            some_int = Series(int)
+
+
+def test_construct_enforces_exactly_one_base_class():
+    with pytest.raises(SchemaError, match="Schema class must subclass"):
+
+        @table
+        class some_table(PatientFrame, Dataset):
+            some_int = Series(int)
+
+
+def test_must_reference_instance_not_class():
+    class some_table(PatientFrame):
+        some_int = Series(int)
+
+    with pytest.raises(SchemaError, match="Missing `@table` decorator"):
+        some_table.some_int

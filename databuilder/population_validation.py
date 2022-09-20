@@ -218,9 +218,14 @@ def date_add_days(date, num_days):
     return date + datetime.timedelta(days=num_days)
 
 
-@register_op(Function.DateSubtractDays)
-def date_subtract_days(date, num_days):
-    return date - datetime.timedelta(days=num_days)
+@register_op(Function.ToFirstOfYear)
+def to_first_of_year(date):
+    return date.replace(day=1, month=1)
+
+
+@register_op(Function.ToFirstOfMonth)
+def to_first_of_month(date):
+    return date.replace(day=1)
 
 
 register_op(Function.Not)(operator.not_)
@@ -233,4 +238,6 @@ register_op(Function.GT)(operator.gt)
 register_op(Function.GE)(operator.ge)
 register_op(Function.Add)(operator.add)
 register_op(Function.Subtract)(operator.sub)
+register_op(Function.CastToInt)(int)
+register_op(Function.CastToFloat)(float)
 register_op(Function.StringContains)(operator.contains)

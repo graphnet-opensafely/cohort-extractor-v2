@@ -4,19 +4,21 @@ from types import SimpleNamespace
 import pytest
 import sqlalchemy.orm
 
-from databuilder.query_language import Dataset, build_event_table
+from databuilder.ehrql import Dataset
+from databuilder.orm_factory import orm_class_from_ql_table
+from databuilder.query_language import EventFrame, Series, table
 
-from ...lib.util import orm_class_from_table
 from .variables_lib import create_sequential_variables
 
 
 @pytest.fixture
 def schema():
-    events = build_event_table(
-        "events",
-        {"date": date, "value": int},
-    )
-    Event = orm_class_from_table(sqlalchemy.orm.declarative_base(), events)
+    @table
+    class events(EventFrame):
+        date = Series(date)
+        value = Series(int)
+
+    Event = orm_class_from_ql_table(sqlalchemy.orm.declarative_base(), events)
     return SimpleNamespace(events=events, Event=Event)
 
 

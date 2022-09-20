@@ -3,10 +3,10 @@ from datetime import datetime
 import pytest
 
 from databuilder.__main__ import main
-from databuilder.validate_dummy_data import ValidationError
+from databuilder.file_formats import FILE_FORMATS, ValidationError
 from tests.lib.fixtures import (
     invalid_dataset_attribute_dataset_definition,
-    invalid_dataset_definition,
+    invalid_dataset_query_model_error_definition,
     no_dataset_attribute_dataset_definition,
     trivial_dataset_definition,
 )
@@ -27,7 +27,6 @@ class DummyDataStudy:
         main(
             [
                 "generate-dataset",
-                "--dataset-definition",
                 str(self.dataset_definition_path),
                 "--output",
                 str(self.dataset_path),
@@ -37,29 +36,30 @@ class DummyDataStudy:
         )
 
 
-def test_generate_dataset(study, mssql_database):
+@pytest.mark.parametrize("extension", list(FILE_FORMATS.keys()))
+def test_generate_dataset(study, mssql_database, extension):
     mssql_database.setup(
         patient(dob=datetime(1943, 5, 5)),
         patient(dob=datetime(1999, 5, 5)),
     )
 
     study.setup_from_string(trivial_dataset_definition)
-    study.generate(mssql_database, "databuilder.backends.tpp.TPPBackend")
+    study.generate(
+        mssql_database, "databuilder.backends.tpp.TPPBackend", extension=extension
+    )
     results = study.results()
 
-    assert len(results) == 2
-    assert {r["year"] for r in results} == {"1943", "1999"}
+    expected = [1943, 1999]
+    if extension in (".csv", ".csv.gz"):
+        expected = [str(v) for v in expected]
+
+    assert len(results) == len(expected)
+    assert {r["year"] for r in results} == set(expected)
 
 
 def test_dump_dataset_sql_happy_path(study, mssql_database):
     study.setup_from_string(trivial_dataset_definition)
     study.dump_dataset_sql()
-
-
-def test_dump_dataset_sql_error_path(study, mssql_database):
-    study.setup_from_string(invalid_dataset_definition)
-    with pytest.raises(NameError):
-        study.dump_dataset_sql()
 
 
 def test_dump_dataset_sql_with_no_dataset_attribute(study, mssql_database):
@@ -74,9 +74,19 @@ def test_dump_dataset_sql_attribute_invalid(study, mssql_database):
     study.setup_from_string(invalid_dataset_attribute_dataset_definition)
     with pytest.raises(
         AssertionError,
-        match="'dataset' must be an instance of databuilder.query_language.Dataset()",
+        match="'dataset' must be an instance of databuilder.ehrql.Dataset()",
     ):
         study.dump_dataset_sql()
+
+
+def test_dump_dataset_sql_query_model_error(study, mssql_database, capsys):
+    study.setup_from_string(invalid_dataset_query_model_error_definition)
+    with pytest.raises(SystemExit) as exc_info:
+        study.dump_dataset_sql()
+    assert exc_info.value.code == 1
+    captured = capsys.readouterr()
+    assert "patients.date_of_birth.year + (patients.sex.is_null())" in captured.err
+    assert "main.py" not in captured.err
 
 
 def test_validate_dummy_data_happy_path(tmp_path):
@@ -89,5 +99,5 @@ def test_validate_dummy_data_happy_path(tmp_path):
 def test_validate_dummy_data_error_path(tmp_path):
     dummy_data = "patient_id,year\n1,1971\n2,foo"
     study = DummyDataStudy(tmp_path, trivial_dataset_definition, dummy_data)
-    with pytest.raises(ValidationError, match="Invalid int"):
+    with pytest.raises(ValidationError, match="invalid literal for int"):
         study.generate_dataset()

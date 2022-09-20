@@ -3,42 +3,44 @@ import datetime
 import sqlalchemy.orm
 
 from databuilder.codes import SNOMEDCTCode
-from databuilder.query_language import build_event_table, build_patient_table
-
-from ..lib.util import orm_class_from_table
-
-p = build_patient_table(
-    "patient_level_table",
-    {
-        "i1": int,
-        "i2": int,
-        "b1": bool,
-        "b2": bool,
-        "c1": SNOMEDCTCode,
-        "d1": datetime.date,
-        "d2": datetime.date,
-        "s1": str,
-        "s2": str,
-    },
-)
+from databuilder.orm_factory import orm_class_from_ql_table
+from databuilder.tables import EventFrame, PatientFrame, Series, table
 
 
-e = build_event_table(
-    "event_level_table",
-    {
-        "i1": int,
-        "i2": int,
-        "b1": bool,
-        "b2": bool,
-        "c1": SNOMEDCTCode,
-        "d1": datetime.date,
-        "d2": datetime.date,
-        "s1": str,
-        "s2": str,
-    },
-)
+@table
+class patient_level_table(PatientFrame):
+    i1 = Series(int)
+    i2 = Series(int)
+    b1 = Series(bool)
+    b2 = Series(bool)
+    c1 = Series(SNOMEDCTCode)
+    d1 = Series(datetime.date)
+    d2 = Series(datetime.date)
+    s1 = Series(str)
+    s2 = Series(str)
+    f1 = Series(float)
+    f2 = Series(float)
 
+
+@table
+class event_level_table(EventFrame):
+    i1 = Series(int)
+    i2 = Series(int)
+    b1 = Series(bool)
+    b2 = Series(bool)
+    c1 = Series(SNOMEDCTCode)
+    d1 = Series(datetime.date)
+    d2 = Series(datetime.date)
+    s1 = Series(str)
+    s2 = Series(str)
+    f1 = Series(float)
+    f2 = Series(float)
+
+
+# Define short aliases for terser tests
+p = patient_level_table
+e = event_level_table
 
 Base = sqlalchemy.orm.declarative_base()
-PatientLevelTable = orm_class_from_table(Base, p)
-EventLevelTable = orm_class_from_table(Base, e)
+PatientLevelTable = orm_class_from_ql_table(Base, patient_level_table)
+EventLevelTable = orm_class_from_ql_table(Base, event_level_table)

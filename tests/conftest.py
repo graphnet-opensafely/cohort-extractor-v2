@@ -1,3 +1,4 @@
+import os
 import subprocess
 from pathlib import Path
 
@@ -65,10 +66,10 @@ class QueryEngineFixture:
         query_engine = self.query_engine_class(
             self.database.host_url(), **engine_kwargs
         )
-        with query_engine.execute_query(variables) as results:
-            # We don't explicitly order the results and not all databases naturally
-            # return in the same order
-            return sorted(map(dict, results), key=lambda i: i["patient_id"])
+        results = query_engine.get_results(variables)
+        # We don't explicitly order the results and not all databases naturally
+        # return in the same order
+        return sorted(map(dict, results), key=lambda i: i["patient_id"])
 
     def dump_dataset_sql(self, dataset, **engine_kwargs):
         variables = compile(dataset)
@@ -93,10 +94,6 @@ def engine_factory(request, engine_name):
     fixture = request.getfixturevalue
 
     if engine_name == "in_memory":
-        # There are some tests we currently expect to fail against the in-memory engine
-        marks = [m.name for m in request.node.iter_markers()]
-        if "xfail_in_memory" in marks:
-            pytest.xfail()
         return QueryEngineFixture(engine_name, InMemoryDatabase(), InMemoryQueryEngine)
     elif engine_name == "sqlite":
         return QueryEngineFixture(
@@ -130,6 +127,7 @@ def databuilder_image():
     subprocess.run(
         ["docker", "build", project_dir, "-t", image],
         check=True,
+        env=os.environ | {"DOCKER_BUILDKIT": "1"},
     )
     return f"{image}:latest"
 

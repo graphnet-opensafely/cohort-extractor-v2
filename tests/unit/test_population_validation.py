@@ -45,12 +45,18 @@ def test_rejects_invalid_type():
 
 
 def test_accepts_basic_reasonable_population():
-    has_registration = AggregateByPatient.Exists(SelectTable("registrations"))
+    has_registration = AggregateByPatient.Exists(
+        SelectTable("registrations", schema=TableSchema(value=int))
+    )
     assert validate_population_definition(has_registration)
 
 
 def test_rejects_basic_unreasonable_population():
-    not_died = Function.Not(AggregateByPatient.Exists(SelectTable("ons_deaths")))
+    not_died = Function.Not(
+        AggregateByPatient.Exists(
+            SelectTable("ons_deaths", schema=TableSchema(value=int))
+        )
+    )
     with pytest.raises(ValidationError, match="must not evaluate as True for NULL"):
         validate_population_definition(not_died)
 
@@ -206,7 +212,17 @@ cases = [
     ),
     (
         datetime.date(2021, 3, 25),
-        Function.DateSubtractDays(Value(datetime.date(2021, 5, 4)), Value(40)),
+        Function.DateAddDays(
+            Value(datetime.date(2021, 5, 4)), Function.Negate(Value(40))
+        ),
+    ),
+    (
+        datetime.date(2021, 1, 1),
+        Function.ToFirstOfYear(Value(datetime.date(2021, 5, 4))),
+    ),
+    (
+        datetime.date(2021, 5, 1),
+        Function.ToFirstOfMonth(Value(datetime.date(2021, 5, 4))),
     ),
     (
         2022,

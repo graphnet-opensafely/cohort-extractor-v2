@@ -105,7 +105,7 @@ docstrings: devenv
     $BIN/pydocstyle databuilder/backends/tpp.py
 
     # only enforce classes are documented for the public facing docs
-    $BIN/pydocstyle --add-ignore=D102,D103,D105,D106 databuilder/contracts/contracts.py
+    $BIN/pydocstyle --add-ignore=D102,D103,D105,D106 databuilder/contracts/wip.py
 
 # runs the format (black) and sort (isort) checks and fixes the files
 fix: devenv
@@ -119,8 +119,14 @@ build-databuilder:
     set -euo pipefail
 
     [[ -v CI ]] && echo "::group::Build databuilder (click to view)" || echo "Build databuilder"
-    docker build . -t databuilder-dev
+    DOCKER_BUILDKIT=1 docker build . -t databuilder-dev
     [[ -v CI ]] && echo "::endgroup::" || echo ""
+
+
+# Build a docker image that can then be used locally via the OpenSAFELY CLI. You must also change project.yaml
+# in the study you're running to specify `dev` as the `databuilder` version (like `run: databuilder:dev ...`).
+build-databuilder-for-os-cli: build-databuilder
+    docker tag databuilder-dev ghcr.io/opensafely-core/databuilder:dev
 
 
 # tear down the persistent docker containers we create to run tests again
@@ -213,6 +219,6 @@ databricks-test *ARGS: devenv databricks-env
     export DATABRICKS_URL="$($BIN/python scripts/dbx url)"
     just test {{ ARGS }}
 
-generate-docs: devenv
-    $BIN/python -m databuilder.docs >public_docs.json
+generate-docs OUTPUT_FILE="public_docs.json": devenv
+    $BIN/python -m databuilder.docs > {{ OUTPUT_FILE }}
     echo "Generated data for documentation."

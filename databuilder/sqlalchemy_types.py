@@ -1,5 +1,4 @@
 import datetime
-from enum import Enum
 
 import sqlalchemy.types
 from sqlalchemy.types import Boolean, Float, Integer, String, Text
@@ -12,7 +11,6 @@ __all__ = [
     "Integer",
     "String",
     "Text",
-    "TYPES_BY_NAME",
     "type_from_python_type",
 ]
 
@@ -47,7 +45,6 @@ class DateTime(sqlalchemy.types.TypeDecorator):
 TYPE_MAP = {
     bool: Boolean,
     datetime.date: Date,
-    datetime.datetime: DateTime,
     float: Float,
     int: Integer,
     str: Text,
@@ -64,17 +61,3 @@ def type_from_python_type(type_):
         return TYPE_MAP[lookup_type]
     except KeyError:
         raise TypeError(f"Unsupported column type: {type_}")
-
-
-TYPES_BY_NAME = Enum(
-    "TYPES_BY_NAME",
-    {
-        "boolean": Boolean,
-        "date": Date,
-        "datetime": DateTime,
-        "float": Float,
-        "integer": Integer,
-        "varchar": Text,
-        "code": Text,
-    },
-)

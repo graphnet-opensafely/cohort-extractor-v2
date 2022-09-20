@@ -1,11 +1,15 @@
 import csv
+import gzip
 import hashlib
 import shutil
 from datetime import datetime, timedelta
 from pathlib import Path
 from urllib.request import urlretrieve
 
+from pyarrow.feather import read_table
+
 from databuilder.__main__ import main
+from databuilder.file_formats import get_file_extension
 
 
 class Cache:
@@ -36,8 +40,8 @@ class Cache:
         return p.stat().st_mtime < (datetime.now() - self._cache_expiry).timestamp()
 
 
-def fetch_repo(repo, root):
-    tarball = Cache().get(f"https://github.com/{repo}/tarball/main")
+def fetch_repo(repo, branch, root):
+    tarball = Cache().get(f"https://github.com/{repo}/tarball/{branch}")
     shutil.unpack_archive(tarball, root, format="gztar")
 
     # The name of the directory inside the tarball is a bit unpredictable, like
@@ -57,8 +61,8 @@ class Study:
         self._containers = containers
         self._image = image
 
-    def setup_from_repo(self, repo, definition_path):
-        self._workspace = fetch_repo(repo, self._root)
+    def setup_from_repo(self, repo, branch, definition_path):
+        self._workspace = fetch_repo(repo, branch, self._root)
         self._definition_path = self._workspace / definition_path
 
     def setup_from_string(self, definition):
@@ -66,8 +70,8 @@ class Study:
         self._definition_path = self._workspace / "dataset.py"
         self._definition_path.write_text(definition)
 
-    def generate(self, database, backend):
-        self._dataset_path = self._workspace / "dataset.csv"
+    def generate(self, database, backend, extension=".csv"):
+        self._dataset_path = self._workspace / f"dataset{extension}"
 
         env = {
             "DATABASE_URL": database.host_url(),
@@ -79,8 +83,8 @@ class Study:
             environ=env,
         )
 
-    def generate_in_docker(self, database, backend):
-        self._dataset_path = self._workspace / "dataset.csv"
+    def generate_in_docker(self, database, backend, extension=".csv"):
+        self._dataset_path = self._workspace / f"dataset{extension}"
         environment = {
             "DATABASE_URL": database.container_url(),
             "OPENSAFELY_BACKEND": backend,
@@ -97,7 +101,6 @@ class Study:
     def _generate_command(definition, dataset):
         return [
             "generate-dataset",
-            "--dataset-definition",
             str(definition),
             "--output",
             str(dataset),
@@ -140,5 +143,14 @@ class Study:
         )
 
     def results(self):
-        with open(self._dataset_path) as f:
-            return list(csv.DictReader(f))
+        extension = get_file_extension(self._dataset_path)
+        if extension == ".csv":
+            with open(self._dataset_path) as f:
+                return list(csv.DictReader(f))
+        elif extension == ".csv.gz":
+            with gzip.open(self._dataset_path, "rt") as f:
+                return list(csv.DictReader(f))
+        elif extension == ".arrow":
+            return read_table(str(self._dataset_path)).to_pylist()
+        else:
+            assert False
