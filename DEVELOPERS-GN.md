@@ -23,3 +23,15 @@ DEBUG=0
 ## Graphnet backend development
 
 [graphnet.py](./databuilder/backends/graphnet.py) need to be implemented based on the [data contract](https://docs.google.com/spreadsheets/d/1Fu5cfmoUHGC4CY4OdEn-7rchhzjMMy--luAQJMeYlr4/edit#gid=2100914852)
+
+### Customisation for Synapse
+
+In order to improvement the performance for Synapse, we need to create tables to temporary store the data.
+A SQL similar to this should be added to [base_sql.py#L495](https://github.com/opensafely-core/databuilder/blob/main/databuilder/query_engines/base_sql.py#L495)
+
+```
+CREATE TABLE TRE.CLINICALEVENTS
+WITH (DISTRIBUTION = ROUND_ROBIN, CLUSTERED COLUMNSTORE INDEX ORDER(CONSULTATIONDATE))
+AS
+SELECT * FROM TRE.[Extl_ClinicalEvents]
+```
