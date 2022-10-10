@@ -11,7 +11,7 @@ attrs==20.3.0 \
     #   flake8-implicit-str-concat
     #   interrogate
     #   pytest
-backports.entry-points-selectable==1.1.0 \
+backports-entry-points-selectable==1.1.0 \
     --hash=sha256:988468260ec1c196dab6ae1149260e2f5472c9110334e5d51adcb77867361f6a \
     --hash=sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc
     # via virtualenv
@@ -251,9 +251,9 @@ pytest-freezegun==0.4.2 \
     --hash=sha256:19c82d5633751bf3ec92caa481fb5cffaac1787bd485f0df6436fd6242176949 \
     --hash=sha256:5318a6bfb8ba4b709c8471c94d0033113877b3ee02da5bfcd917c1889cde99a7
     # via -r requirements.dev.in
-pytest-mock==3.6.1 \
-    --hash=sha256:30c2f2cc9759e76eee674b81ea28c9f0b94f8f0445a1b87762cadf774f0df7e3 \
-    --hash=sha256:40217a058c52a63f1042f0784f62009e976ba824c418cced42e88d5f40ab0e62
+pytest-mock==3.10.0 \
+    --hash=sha256:f4c973eeae0282963eb293eb173ce91b091a79c1334455acfac9ddee8a1c784b \
+    --hash=sha256:fbbdb085ef7c252a326fd8cdcac0aa3b1333d8811f131bdcc701002e1be7ed4f
     # via -r requirements.dev.in
 python-dateutil==2.8.2 \
     --hash=sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86 \
