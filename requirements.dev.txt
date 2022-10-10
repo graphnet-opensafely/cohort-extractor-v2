@@ -11,7 +11,7 @@ attrs==20.3.0 \
     #   flake8-implicit-str-concat
     #   interrogate
     #   pytest
-backports.entry-points-selectable==1.1.0 \
+backports-entry-points-selectable==1.1.0 \
     --hash=sha256:988468260ec1c196dab6ae1149260e2f5472c9110334e5d51adcb77867361f6a \
     --hash=sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc
     # via virtualenv
@@ -101,9 +101,9 @@ flake8==4.0.1 \
     #   -r requirements.dev.in
     #   flake8-builtins
     #   flake8-no-pep420
-flake8-builtins==1.5.3 \
-    --hash=sha256:09998853b2405e98e61d2ff3027c47033adbdc17f9fe44ca58443d876eb00f3b \
-    --hash=sha256:7706babee43879320376861897e5d1468e396a40b8918ed7bccf70e5f90b8687
+flake8-builtins==2.0.0 \
+    --hash=sha256:39bfa3badb5e8d22f92baf4e0ea1b816707245233846932d6b13e81fc6f673e8 \
+    --hash=sha256:98833fa16139a75cd4913003492a9bd9a61c6f8ac146c3db12a2ebaf420dade3
     # via -r requirements.dev.in
 flake8-implicit-str-concat==0.2.0 \
     --hash=sha256:a662364c0389a14f5c94a807eda3ac81ab545ba8d75aa244c022af4a7b121eec \
