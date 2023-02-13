@@ -8,10 +8,9 @@ attrs==20.3.0 \
     --hash=sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6 \
     --hash=sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700
     # via
-    #   flake8-implicit-str-concat
     #   interrogate
     #   pytest
-backports.entry-points-selectable==1.1.0 \
+backports-entry-points-selectable==1.1.0 \
     --hash=sha256:988468260ec1c196dab6ae1149260e2f5472c9110334e5d51adcb77867361f6a \
     --hash=sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc
     # via virtualenv
@@ -105,9 +104,9 @@ flake8-builtins==1.5.3 \
     --hash=sha256:09998853b2405e98e61d2ff3027c47033adbdc17f9fe44ca58443d876eb00f3b \
     --hash=sha256:7706babee43879320376861897e5d1468e396a40b8918ed7bccf70e5f90b8687
     # via -r requirements.dev.in
-flake8-implicit-str-concat==0.2.0 \
-    --hash=sha256:a662364c0389a14f5c94a807eda3ac81ab545ba8d75aa244c022af4a7b121eec \
-    --hash=sha256:ea856c22cd8dbd4ecb8d091e92784ce09a3083f1763df895693bf887d21acef5
+flake8-implicit-str-concat==0.4.0 \
+    --hash=sha256:b6acf233afee943dc1802ef4bc242a19f0419fac9943739e235d3f2aaf616361 \
+    --hash=sha256:b91805a3e0ff30ae2890830548478af25c79a4a579ec402a6ba3538043dff60c
     # via -r requirements.dev.in
 flake8-no-pep420==2.0.0 \
     --hash=sha256:517126ced5fc43bb90a562cf7c1d33b67fbd067a69b6ded3867be5c5a1437355 \
@@ -141,10 +140,6 @@ mccabe==0.6.1 \
     --hash=sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42 \
     --hash=sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f
     # via flake8
-more-itertools==8.10.0 \
-    --hash=sha256:1debcabeb1df793814859d64a81ad7cb10504c24349368ccf214c664c474f41f \
-    --hash=sha256:56ddac45541718ba332db05f464bebfb0768110111affd27f66e0051f276fa43
-    # via flake8-implicit-str-concat
 mypy==0.920 \
     --hash=sha256:13b3c110309b53f5a62aa1b360f598124be33a42563b790a2a9efaacac99f1fc \
     --hash=sha256:140174e872d20d4768124a089b9f9fc83abd6a349b7f8cc6276bc344eb598922 \
